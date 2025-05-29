@@ -38,11 +38,10 @@ requests
 ### Claude Desktop
 
 1. Instalar [Claude Desktop](https://claude.ai/download)
-
 2. Configurar MCP en `claude_desktop_config.json`:
 
-**Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
-**macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+**Windows:** `%APPDATA%\Claude\claude_desktop_config.json`  
+**macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`  
 **Linux:** `~/.config/Claude/claude_desktop_config.json`
 
 ```json
@@ -50,7 +49,7 @@ requests
   "mcpServers": {
     "lena-analysis": {
       "command": "python",
-      "args": ["/ruta/completa/a/lena_mcp_server.py"]
+      "args": ["/ruta/completa/a/main.py"]
     }
   }
 }
@@ -63,8 +62,20 @@ requests
 ### Ejecutar el servidor
 
 ```bash
-python lena_mcp_server.py
+python main.py
 ```
+
+### Demo en Claude Desktop
+
+Acceso a herramiantas en claude
+
+![image](https://github.com/user-attachments/assets/0222d332-a14f-4c4b-89aa-ae1bee323bc2)
+
+
+Solicitud de permisos
+![image](https://github.com/user-attachments/assets/ab74e07a-f4bb-4567-92d4-403f6fd6c0da)
+
+*Claude Desktop mostrando las herramientas MCP disponibles para análisis de Lena*
 
 ### Comandos disponibles en Claude
 
@@ -116,19 +127,25 @@ Una vez configurado, puedes usar estos comandos en Claude Desktop:
 }
 ```
 
-## ¿Por qué Lena?
+## Estructura del proyecto
 
-La imagen de **Lena Söderberg** (1972) es LA imagen más usada en computer vision porque:
+```
+mcp_lena_test/
+├── main.py              # Servidor MCP principal
+├── run.py               # Script de prueba/demo
+├── lena_demo/          # Resultados generados
+│   ├── lena.png
+│   ├── lena_with_detection.jpg
+│   └── lena_edges.jpg
 
-- Complejidad balanceada (detalles finos + texturas suaves)
-- Rostro humano ideal para detección facial
-- Colores naturales y buen contraste
-- Tamaño estándar 512x512 píxeles
+```
+ 
+## Resultados
 
-## resultados
+El programa crea una carpeta `lena_demo/` con:
 
-El programa crea una carpeta lena_demo/ con:
+- `lena.png` - Imagen original descargada
+- `lena_with_detection.jpg` - Imagen con rostros y ojos marcados
+- `lena_edges.jpg` - Detección de bordes
 
-lena.png - Imagen original descargada
-lena_with_detection.jpg - Imagen con rostros y ojos marcados
-lena_edges.jpg - Detección de bordes
+ 
