@@ -2,6 +2,8 @@
 
 import asyncio
 import json
+
+
 import os
 from pathlib import Path
 from typing import Any, Sequence
@@ -10,21 +12,27 @@ import cv2
 import numpy as np
 
 from mcp.server import Server
-from mcp.server.models import InitializationOptions
+from mcp.server.models import InitializationOptions, ServerCapabilities
 import mcp.server.stdio
 import mcp.types as types
+import sys
+import traceback
+
+print("SRV MCP iniciando...", file=sys.stderr, flush=True)
 
 app = Server("lena-analysis-mcp")
 
 class LenaAnalysisDemo:
     def __init__(self):
-        self.demo_folder = Path("lena_demo")
+        script_dir = Path(__file__).parent
+        self.demo_folder = script_dir / "lena_demo"
         self.demo_folder.mkdir(exist_ok=True)
         self.lena_url = "https://upload.wikimedia.org/wikipedia/en/7/7d/Lenna_%28test_image%29.png"
         self.lena_path = self.demo_folder / "lena.png"
         self.face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
         self.eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
-    
+        print(f"Carpeta demo: {self.demo_folder.absolute()}", file=sys.stderr, flush=True)
+
     def download_lena(self):
         if self.lena_path.exists():
             return True
@@ -43,17 +51,23 @@ class LenaAnalysisDemo:
             return False
     
     def analyze_lena_complete(self):
+        print("🔍 [DEBUG] Iniciando análisis de Lena...")
         if not self.lena_path.exists():
+            print(" [DEBUG] Descargando Lena...")
             if not self.download_lena():
                 return {"error": "No se pudo descargar Lena"}
         
+        print(" [DEBUG] Cargando imagen...")
         img = cv2.imread(str(self.lena_path))
         if img is None:
             return {"error": "No se pudo cargar la imagen"}
             
+        print(" [DEBUG] Convirtiendo a escala de grises...")
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         
+        print(" [DEBUG] Detectando rostros...")
         faces = self.face_cascade.detectMultiScale(gray, 1.3, 5)
+        print(f" [DEBUG] Rostros encontrados: {len(faces)}")
         
         face_details = []
         if len(faces) > 0:
@@ -101,6 +115,8 @@ class LenaAnalysisDemo:
         }
     
     def create_visual_analysis(self):
+        print(f"create_visual_analysis Guardando en: {self.demo_folder.absolute()}", file=sys.stderr, flush=True)
+        
         if not self.lena_path.exists():
             if not self.download_lena():
                 return {"error": "No se pudo descargar Lena"}
@@ -130,6 +146,10 @@ class LenaAnalysisDemo:
         cv2.imwrite(str(output_faces), img_with_faces)
         cv2.imwrite(str(output_edges), edges)
         
+        print(f" [DEBUG] Archivos guardados:", file=sys.stderr, flush=True)
+        print(f"  - {output_faces}", file=sys.stderr, flush=True)
+        print(f"  - {output_edges}", file=sys.stderr, flush=True)
+        
         return {
             "output_files": {
                 "face_detection": str(output_faces),
@@ -137,7 +157,7 @@ class LenaAnalysisDemo:
             },
             "processing_complete": True
         }
-    
+        
     def detect_faces_only(self):
         if not self.lena_path.exists():
             if not self.download_lena():
@@ -198,9 +218,12 @@ async def handle_list_tools() -> list[types.Tool]:
 
 @app.call_tool()
 async def handle_call_tool(name: str, arguments: dict) -> list[types.TextContent]:
+    print(f"🔧 [DEBUG] Herramienta llamada: {name}")
     try:
         if name == "analyze_lena":
+            print("[DEBUG] Ejecutando análisis completo...")
             result = lena_analyzer.analyze_lena_complete()
+            print("[DEBUG] Análisis completado")
             return [types.TextContent(
                 type="text", 
                 text=json.dumps(result, indent=2, ensure_ascii=False)
@@ -247,19 +270,30 @@ async def handle_call_tool(name: str, arguments: dict) -> list[types.TextContent
         )]
 
 async def main():
-    async with mcp.server.stdio.stdio_server() as (read_stream, write_stream):
-        await app.run(
-            read_stream,
-            write_stream,
-            InitializationOptions(
-                server_name="lena-analysis-mcp",
-                server_version="1.0.0",
-                capabilities=app.get_capabilities(
-                    notification_options=None,
-                    experimental_capabilities=None,
-                ),
-            ),
-        )
+    print(" [DEBUG] Iniciando servidor MCP...", file=sys.stderr, flush=True)
+    try:
+        print("[DEBUG] Creando stdio server...", file=sys.stderr, flush=True)
+        async with mcp.server.stdio.stdio_server() as (read_stream, write_stream):
+            print(" [DEBUG] Streams creados correctamente", file=sys.stderr, flush=True)
+            print(" [DEBUG] Ejecutando app.run()...", file=sys.stderr, flush=True)
+            await app.run(
+                read_stream,
+                write_stream,
+                InitializationOptions(
+                    server_name="lena-analysis-mcp",
+                    server_version="1.0.0",
+                    capabilities=ServerCapabilities(tools={})
+                )
+            )
+    except Exception as e:
+        print(f"[DEBUG] Error en main(): {e}", file=sys.stderr, flush=True)
+        traceback.print_exc(file=sys.stderr)
+        raise
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    print("🔧 Ejecutando servidor...", file=sys.stderr, flush=True)
+    try:
+        asyncio.run(main())
+    except Exception as e:
+        print(f" Error general: {e}", file=sys.stderr, flush=True)
+        traceback.print_exc(file=sys.stderr)
