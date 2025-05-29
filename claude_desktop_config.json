@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "lena-analysis": {
+      "command": "cmd",
+      "args": ["/c", "C:\\Users\\USER\\anaconda3\\envs\\mcp-server\\python.exe", "C:\\Users\\XXXXXX\\Documents\\MCP\\main.py"] 
+    }
+  }
+}
