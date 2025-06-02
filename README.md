@@ -46,10 +46,9 @@ MCP_LENA_TEST/
 │   ├── database_demo.py           # Demo completo de capacidades
 │   ├── mcp_database.db           # Base de datos SQLite
 │
-├── ⚙️ CONFIGURACIÓN
-│   ├── claude_desktop_config.json        # Configuración de ejemplo de Claude, va en la carpeta de claude no aca
-│   ├── requirements.txt                   # Dependencias
-│   └── README.md                         # Esta documentación
+├── claude_desktop_config.json        # Configuración de ejemplo de Claude, va en la carpeta de claude no aca
+├── requirements.txt                   # Dependencias
+│── README.md                         # Esta documentación
 ```
 
 ## 🛠️ Instalación
