@@ -33,28 +33,23 @@ Este proyecto muestra el poder de **MCP** para integrar diferentes tipos de aná
 
 ```
 MCP_LENA_TEST/
-├── 🖼️ COMPUTER VISION
+├── 🗂️ lena_demo
 │   ├── main.py                     # Servidor MCP para análisis de imágenes
 │   ├── run.py                      # Demo del análisis de Lena
-│   └── lena_demo/                  # Resultados generados
+│   └── lena_image_results/                  # Resultados generados
 │       ├── lena.png               # Imagen original
 │       ├── lena_with_detection.jpg # Con detección de rostros
 │       └── lena_edges.jpg         # Detección de bordes
 │
-├── 🗄️ BUSINESS INTELLIGENCE  
+├── 🗂️ database_demo 
 │   ├── database_server.py          # Servidor MCP para análisis de datos
 │   ├── database_demo.py           # Demo completo de capacidades
 │   ├── mcp_database.db           # Base de datos SQLite
-│   └── database_demo/            # Carpeta adicional de demos
 │
 ├── ⚙️ CONFIGURACIÓN
-│   ├── claude_desktop_config.json        # Configuración real de Claude
-│   ├── claude_desktop_config_template.json # Template de configuración
+│   ├── claude_desktop_config.json        # Configuración de ejemplo de Claude, va en la carpeta de claude no aca
 │   ├── requirements.txt                   # Dependencias
 │   └── README.md                         # Esta documentación
-│
-└── 🗂️ GENERATED
-    └── __pycache__/                      # Cache de Python
 ```
 
 ## 🛠️ Instalación
