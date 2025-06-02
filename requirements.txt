@@ -1,0 +1,20 @@
+# === DEPENDENCIAS ESENCIALES ===
+
+# MCP Protocol
+mcp
+
+# Computer Vision (main.py)
+opencv-python
+numpy
+requests
+
+# Base de datos SQLite (incluida en Python)
+# No necesita instalación adicional
+
+# === DEPENDENCIAS OPCIONALES ===
+# Descomenta si necesitas análisis avanzados:
+
+# pandas        # Para análisis de datos más avanzados
+# matplotlib    # Para gráficos y visualizaciones  
+# seaborn       # Para gráficos estadísticos elegantes
+# Pillow        # Para procesamiento adicional de imágenes
